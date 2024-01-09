@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="store.css">
+    <link rel="stylesheet" href="fontawesome-free-6.4.0-web/css/all.css">
+</head>
+
+<body>
+
+
+
+    <div class="header">
+        <p class="logo">GENESIS</p>
+
+        <div class="wrapper">
+
+            <i style="color: black;" class="fa-thin fa-file-user"></i>
+            <p style="color: white;">Hi,</p> &nbsp;
+            <div style="color: green; font-weight: 700;" id="name"></div>
+            <div class="cart">
+                🛒
+                <p id="count">0</p>
+            </div>
+            <button><a style="text-decoration: none;" href="./sign-in.html">SIGN-OUT</a></button>
+        </div>
+
+
+    </div>
+
+
+    <div class="container">
+        <div id="root"></div>
+        <div id="sidebar">
+            <div class="head">
+                <p>My Cart</p>
+            </div>
+            <div id="cartItem">Your Cart is empty</div>
+            <div class="foot">
+                <h3>Total</h3>
+                <h2 id="total"># 0.00</h2>
+            </div>
+            <div>
+                <div id="purchaseMsg"></div>
+                <button id="purchase" onclick="purchaseItem()">PURCHASE</button>
+
+            </div>
+        </div>
+
+    </div>
+
+
+    <script>
+        const product = [
+            {
+                id: 0,
+                image: './public/jumia-images/newbie1.jpg',
+                title: 'Binatone 3 Litres Electric..',
+                price: 22920
+
+            },
+            {
+                id: 1,
+                image: './jumia-images/newbie2.jpg',
+                title: '2024 Men Casual Nobel..',
+                price: 8600
+
+            },
+            {
+                id: 2,
+                image: './jumia-images/newbie3.jpg',
+                title: 'XIAOMI Redmi 12 6.79 4..',
+                price: 146000
+
+            },
+            {
+                id: 3,
+                image: './jumia-images/newbie4.jpg',
+                title: 'Apple Iphone 15 Pro 128..',
+                price: 1440999
+
+            },
+            {
+                id: 4,
+                image: './jumia-images/newbie5.jpg',
+                title: 'Oraimo Watch 2 GPS Fun..',
+                price: 43500
+
+            },
+            {
+                id: 5,
+                image: './jumia-images/newbie6.jpg',
+                title: 'EA Sport FC 24 Playstati..',
+                price: 49680
+
+            },
+            {
+                id: 6,
+                image: './jumia-images/newbie7.jpg',
+                title: 'Binatone Smooth Gliding..',
+                price: 10573
+
+            },
+            {
+                id: 7,
+                image: './jumia-images/christmas1.jpg',
+                title: 'Elepaq 2.5 KVA Constant',
+                price: 294000
+
+            },
+            {
+                id: 8,
+                image: './jumia-images/christmas3.jpg',
+                title: 'Sony PlayStation 5 Conso',
+                price: 580000
+
+            },
+            {
+                id: 9,
+                image: './jumia-images/matel.jpg',
+                title: 'Martel Congnate Blue Swift..',
+                price: 51350
+
+            },
+            {
+                id: 10,
+                image: './jumia-images/tv2.jpg',
+                title: 'Midea 43 Liters Refrigerat..',
+                price: 52500
+
+            },
+            {
+                id: 11,
+                image: './jumia-images/newbie8.jpg',
+                title: 'Coca-cola Sleek Can x24.',
+                price: 4475
+
+            },
+            {
+                id: 12,
+                image: 'https://ng.jumia.is/cms/0-1-christmas-sale/2022/thumbnails/phones_220x220.png',
+                title: 'Phone & Tablets',
+                price: 800225
+
+            },
+            {
+                id: 13,
+                image: 'https://ng.jumia.is/cms/0-1-christmas-sale/2022/thumbnails/electronics_220x220.png',
+                title: 'Phone & Tablets',
+                price: 800225
+
+            },
+            {
+                id: 13,
+                image: 'https://ng.jumia.is/cms/0-1-homepage/0-0-thumbnails/v2/exclusive-deals_220x220v2.png',
+                title: 'Wrist Watch',
+                price: 102500
+
+            },
+            {
+                id: 13,
+                image: 'https://ng.jumia.is/unsafe/fit-in/300x300/filters:fill(white)/product/89/762414/1.jpg?2533',
+                title: 'Eaget pen Flash Drive 3.0...',
+                price: 5200
+
+            },
+        ];
+        var user = JSON.parse(localStorage.getItem("user"));
+        let firstName = user.firstName;
+        document.getElementById('name').innerHTML = firstName
+
+        const categories = [...new Set(product.map((item) => {
+
+            return item;
+        }))];
+
+        let i = 0;
+        document.getElementById('root').innerHTML = categories.map((item) => {
+            var { image, title, price } = item;
+            return (
+                `<div class='box'>
+                <div class='img-box'>
+                    <img class='images' src=${image}></img>
+                </div>
+                <div class='bottom'>
+                    <p>${title}</p>
+                    <h2>₦ ${price}.00</h2>` +
+                "<button onclick='addtocart(" + (i++) + ")'>Add to Cart</button>" +
+                `</div>
+            </div>`
+            )
+        }).join('');
+
+        var cart = [];
+        function addtocart(a) {
+            cart.push({ ...categories[a] });
+            displaycart();
+        }
+        function delElement(a) {
+            cart.splice(a, 1);
+            displaycart();
+        }
+        function displaycart(a) {
+            document.getElementById("count").innerHTML = cart.length;
+            let j = 0; total = 0;
+            if (cart.length == 0) {
+                document.getElementById('cartItem').innerHTML = "Your cart is empty";
+                document.getElementById('total').innerHTML = "₦ " + 0 + ".00";
+            } else {
+                document.getElementById("cartItem").innerHTML = cart.map((items) => {
+                    var { image, title, price } = items;
+                    total = total + price;
+                    document.getElementById("total").innerHTML = "₦" + total + ".00";
+                    return (
+                        `<div class='cart-item'>
+                        <div class='row-img'>
+                            <img class='rowing' src=${image}></img>
+                        </div>
+                        <p style='font-size: 12px;'>${title} </p>
+                        <h2 style='font-size: 15px;'>₦ ${price}.00</h2>` +
+                        "<i class='fa fa-trash' onclick='delElement(" + (j++) + ")'></i>" +
+                        `</div>`
+                    );
+                }).join('');
+            }
+        }
+        function purchaseItem() {
+            //   alert('')
+
+            setTimeout(() => {
+                cart.splice(0)
+                displaycart();
+                purchaseMsg.innerHTML = "";
+            }, 2000)
+            purchaseMsg.innerHTML = "Thank you  for your purchase";
+        }
+
+    </script>
+
+
+
+</body>
+
+</html>
